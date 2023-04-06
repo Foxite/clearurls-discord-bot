@@ -5,6 +5,8 @@ from discord import Intents
 from dotenv import load_dotenv
 from unalix import clear_url
 
+delete_emoji = os.environ['DELETE_EMOJI']
+
 def clean_message(content):
     # Extract links and clean
     cleaned = ""
@@ -48,6 +50,10 @@ class MyClient(discord.Client):
 
             await message.channel.send("Cleaned message by " + message.author.mention + ":\n" + cleaned, mention_author=False, files=message_files, reference=message.reference)
             await message.delete()
+
+    async def on_reaction_add(self, reaction, user):
+        if reaction.message.author == client.user and len(reaction.message.mentions) > 0 and reaction.message.mentions[0] == user and str(reaction.emoji) == delete_emoji:
+            await reaction.message.delete()
 
 if __name__ == "__main__":
     load_dotenv()
