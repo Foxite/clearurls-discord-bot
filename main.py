@@ -48,7 +48,7 @@ class MyClient(discord.Client):
             for att in message.attachments:
                 message_files.append(await att.to_file())
 
-            await message.channel.send("Cleaned message by " + message.author.mention + ":\n" + cleaned, mention_author=False, files=message_files, reference=message.reference)
+            await message.channel.send("Cleaned message by " + message.author.mention + ": (react with " + delete_emoji + " to delete)\n" + cleaned, mention_author=False, files=message_files, reference=message.reference)
             await message.delete()
 
     async def on_reaction_add(self, reaction, user):
