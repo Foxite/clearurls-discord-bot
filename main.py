@@ -46,7 +46,7 @@ class MyClient(discord.Client):
             for att in message.attachments:
                 message_files.append(await att.to_file())
 
-            await message.reply("Cleaned message by " + message.author.mention + ":\n" + cleaned, mention_author=False, files=message_files)
+            await message.channel.send("Cleaned message by " + message.author.mention + ":\n" + cleaned, mention_author=False, files=message_files, reference=message.reference)
             await message.delete()
 
 if __name__ == "__main__":
