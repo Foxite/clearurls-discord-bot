@@ -1,7 +1,7 @@
 import os
 import re
 import discord
-from discord import Intents
+from discord import Intents, AllowedMentions
 from dotenv import load_dotenv
 from unalix import clear_url
 
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
                 await message.channel.send(
                     "Cleaned message by " + message.author.mention + ": (react with " + delete_emoji + " to delete)\n" + cleaned,
-                    mention_author=False, files=message_files, reference=message.reference)
+                    mention_author=False, files=message_files, reference=message.reference, allowed_mentions=AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
                 await message.delete()
 
         async def on_reaction_add(self, reaction, user):
