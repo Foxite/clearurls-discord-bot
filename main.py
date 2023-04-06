@@ -42,7 +42,7 @@ class MyClient(discord.Client):
         # Send message and add reactions
         if any_cleaned:
             #text = 'It appears that you have sent one or more links with tracking parameters. Below are the same links with those fields removed:\n' + '\n'.join(cleaned)
-            await message.reply(cleaned, mention_author=False)
+            await message.reply("Cleaned message by " + message.author.mention + ":\n" + cleaned, mention_author=False)
             await message.delete()
 
 if __name__ == "__main__":
