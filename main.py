@@ -8,23 +8,33 @@ from unalix import clear_url
 class MyClient(discord.Client):
     async def on_message(self, message):
         if message.author == client.user:
-            permissions = message.channel.guild.me.permissions_in(message.channel)
-            # Suppress embeds for bot messages to avoid visual clutter
-            if permissions.manage_messages:
-                await message.edit(suppress=True)
-                # Add :wastebasket: emoji for easy deletion if necessary
-                if permissions.add_reactions and permissions.read_message_history:
-                    await message.add_reaction('🗑')
+            return
 
         # Extract links and clean
-        urls = re.findall('(?P<url>https?://[^\s]+)', message.content)
-        cleaned = []
-        for url in urls:
-            if clear_url(url) != url:
-                cleaned.append(clear_url(url))
+        cleaned = ""
+        any_cleaned = False
+        last_match = None
+        for match in re.finditer('(?P<url>https?://[^\s]+)', message.content):
+            if last_match is None:
+                cleaned += message.content[0:match.start()]
+            else:
+                cleaned += message.content[last_match.end():match.start()]
+
+            last_match = match
+
+            url = message.content[match.start():match.end()]
+            cleaned_url = clear_url(url)
+            if cleaned_url != url:
+                cleaned += cleaned_url
+                any_cleaned = True
+            else:
+                cleaned += url
+
+        if last_match is not None:
+            cleaned += message.content[last_match.end():]
 
         # Send message and add reactions
-        if cleaned:
+        if any_cleaned:
             #text = 'It appears that you have sent one or more links with tracking parameters. Below are the same links with those fields removed:\n' + '\n'.join(cleaned)
             await message.reply(cleaned, mention_author=False)
             await message.delete()
