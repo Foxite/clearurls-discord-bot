@@ -57,12 +57,14 @@ if __name__ == "__main__":
                 await message.delete()
 
         async def on_reaction_add(self, reaction, user):
-            if reaction.message.author == client.user and len(reaction.message.mentions) > 0 and \
-                    reaction.message.mentions[0] == user and str(reaction.emoji) == delete_emoji:
+            regex_match = re.match("Cleaned message by <@(?P<Mention>[0-9]+)>", reaction.message.content)
+            if reaction.message.author == client.user and regex_match and regex_match.group("Mention") == str(user.id) \
+                    and str(reaction.emoji) == delete_emoji:
                 await reaction.message.delete()
 
 
     intents = Intents.default()
     intents.message_content = True
+    intents.guild_reactions = True
     client = MyClient(intents=intents)
     client.run(bot_token)
